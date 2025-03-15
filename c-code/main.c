@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <IRremote.h>
 
-#define IR_SEND_PIN 3
+#define IR_SEND_PIN 12
 #define IR_RECEIVE_PIN 9
 
 // Constants representing remote key codes
@@ -148,8 +148,10 @@ void loop() {
 
       count++;
       togglerState = !togglerState;
-      digitalWrite(ledPin, togglerState ? HIGH : LOW);
       IrSender.sendNEC(0x0102, togglerState ? RemoteVolUp : RemoteVolDn, 0);
+      // ir sender toggles LED internally, therefore, digitalWrite call
+      // has to follow later
+      digitalWrite(ledPin, togglerState ? HIGH : LOW);
       delay(50);  // Debounce delay – adjust as needed
     }
 
