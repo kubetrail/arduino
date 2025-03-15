@@ -9,7 +9,7 @@ and IR receiver to Arduino Nano 33 IoT board.
 
 ## hardware setup
 Connect IR sensor to pin 9 and two push buttons on pin 10 and 11, respectively.
-Connect IR transmitter to pin 3. Also keep an IR remote handy for testing.
+Connect IR transmitter to pin 12. Also keep an IR remote handy for testing.
 
 ## software setup
 Install
