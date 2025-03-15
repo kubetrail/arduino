@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <IRremote.h>
 
+#define IR_SEND_PIN 3
 #define IR_RECEIVE_PIN 9
 
 // Constants representing remote key codes
@@ -23,7 +24,7 @@
 #define RemoteVolUp 0x7
 #define RemoteVolDn 0xB
 #define RemoteChUp 0x12
-#define RemoteChDown 0x10
+#define RemoteChDn 0x10
 #define RemoteMenu 0x1A
 #define RemoteSmartHub 0x79
 #define RemoteGuide 0x4F
@@ -51,7 +52,7 @@
 
 const char* getRemoteKeyName(uint16_t key) {
   switch (key) {
-  case RemotePower: return "Power";
+    case RemotePower: return "Power";
     case RemoteSource: return "Source";
     case RemoteKey0: return "0";
     case RemoteKey1: return "1";
@@ -70,7 +71,7 @@ const char* getRemoteKeyName(uint16_t key) {
     case RemoteVolUp: return "VolUp";
     case RemoteVolDn: return "VolDn";
     case RemoteChUp: return "ChUp";
-    case RemoteChDown: return "ChDown";
+    case RemoteChDn: return "ChDn";
     case RemoteMenu: return "Menu";
     case RemoteSmartHub: return "SmartHub";
     case RemoteGuide: return "Guide";
@@ -114,6 +115,7 @@ void setup() {
   pinMode(buttonRed, INPUT_PULLUP);
   pinMode(buttonGreen, INPUT_PULLUP);
   pinMode(ledPin, OUTPUT);
+  IrSender.begin(IR_SEND_PIN);
   IrReceiver.begin(IR_RECEIVE_PIN);
 }
 
@@ -136,7 +138,6 @@ void loop() {
   if (isButtonPressed(buttonRed)) {
     Serial.println("interrupted: exiting main");
     running = false;  // Set a flag to stop the main loop
-    stop();
   }
 
 
@@ -148,11 +149,13 @@ void loop() {
       count++;
       togglerState = !togglerState;
       digitalWrite(ledPin, togglerState ? HIGH : LOW);
+      IrSender.sendNEC(0x0102, togglerState ? RemoteVolUp : RemoteVolDn, 0);
       delay(50);  // Debounce delay – adjust as needed
     }
 
     delay(100);
   } else {
     // Do nothing effectively stopping the loop
+    stop();
   }
 }
